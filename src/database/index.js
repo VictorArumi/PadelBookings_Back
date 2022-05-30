@@ -21,7 +21,7 @@ const connectDB = (connectionString) =>
     });
     mongoose.connect(connectionString, (error) => {
       if (error) {
-        debug(chalk.red("Error on connecting to database:", error.message));
+        debug(chalk.bgRed("Error on connecting to database:", error.message));
         reject();
         return;
       }

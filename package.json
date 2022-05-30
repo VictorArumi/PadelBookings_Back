@@ -39,5 +39,13 @@
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3",
     "validation": "^0.0.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/database/index.js",
+      "!src/server/initializeServer.js"
+    ]
   }
 }
