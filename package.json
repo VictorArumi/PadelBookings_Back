@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "start": "node src",
+    "start-dev": "nodemon src -q",
+    "prepare": "husky install",
+    "test": "jest --watchAll=false --passWithNoTests",
+    "test-coverage": "npm run test -- --coverage --watchAll=false --passWithNoTests"
   },
   "keywords": [],
   "author": "",
