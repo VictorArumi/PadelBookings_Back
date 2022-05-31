@@ -17,6 +17,8 @@ jest.mock("../database/models/User", () => ({
 
 jest.mock("bcrypt", () => ({ hash: jest.fn() }));
 
+const mockNext = jest.fn();
+
 describe("Given a register user function", () => {
   describe("When it is called and the request has valid new user data", () => {
     test("Then it should call the response's methods status with a 201, and json with the username", async () => {
@@ -42,7 +44,7 @@ describe("Given a register user function", () => {
   });
 
   describe("When it is called and the request has an existing username", () => {
-    test("Then it should call next with an error 409 with message 'This user already exists...' ", async () => {
+    test("Then it should call next with an error", async () => {
       const req = {
         body: { username: "Repeated User", password: "smith99" },
       };
@@ -51,14 +53,11 @@ describe("Given a register user function", () => {
         json: jest.fn(),
       };
 
-      const mockNext = jest.fn();
       User.findOne.mockImplementation(() => true);
       bcrypt.hash.mockImplementation(() => "smith99HashedPassword");
 
       await userRegister(req, res, mockNext);
       const expectedError = new Error();
-      expectedError.code = 409;
-      expectedError.message = "This user already exists...";
 
       expect(mockNext).toHaveBeenCalledWith(expectedError);
     });
@@ -74,13 +73,11 @@ describe("Given a register user function", () => {
         json: jest.fn(),
       };
 
-      const mockNext = jest.fn();
-      User.findOne.mockImplementation(() => true);
+      const expectedError = new Error();
+
+      User.findOne = jest.fn().mockRejectedValue(expectedError);
 
       await userRegister(req, res, mockNext);
-      const expectedError = new Error();
-      expectedError.code = 400;
-      expectedError.message = "This user already exists...";
 
       expect(mockNext).toHaveBeenCalledWith(expectedError);
     });
