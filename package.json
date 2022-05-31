@@ -8,6 +8,7 @@
     "start-dev": "nodemon src -q",
     "prepare": "husky install",
     "test": "jest --watchAll=false --passWithNoTests",
+    "test-running": "jest --watchAll",
     "test-coverage": "npm run test -- --coverage --watchAll=false --passWithNoTests"
   },
   "keywords": [],
