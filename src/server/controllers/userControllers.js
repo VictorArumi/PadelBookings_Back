@@ -1,6 +1,6 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
-const User = require("../database/models/User");
+const User = require("../../database/models/User");
 
 const userRegister = async (req, res, next) => {
   try {

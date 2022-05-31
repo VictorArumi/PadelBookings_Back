@@ -1,7 +1,6 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
-
-const User = require("../database/models/User");
+const User = require("../../database/models/User");
 const { userRegister } = require("./userControllers");
 
 const mockNewUser = {
@@ -10,7 +9,7 @@ const mockNewUser = {
   _id: "fakeid1991239",
 };
 
-jest.mock("../database/models/User", () => ({
+jest.mock("../../database/models/User", () => ({
   findOne: jest.fn(),
   create: jest.fn(() => mockNewUser),
 }));
