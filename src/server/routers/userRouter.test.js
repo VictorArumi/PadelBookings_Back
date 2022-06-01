@@ -62,9 +62,14 @@ describe("Given a POST /users/register/ endpoint", () => {
 describe("Given a POST /users/login/ endpoint", () => {
   describe("When it receives a request with an existing user and it's right password", () => {
     test("Then it should respond with a 200 status code", async () => {
+      const newUserLoginData = {
+        username: newUserData.username,
+        password: newUserData.password,
+      };
+
       await request(app).post("/user/register").send(newUserData).expect(201);
 
-      await request(app).post("/user/login").send(newUserData).expect(200);
+      await request(app).post("/user/login").send(newUserLoginData).expect(200);
     });
   });
 
@@ -77,7 +82,6 @@ describe("Given a POST /users/login/ endpoint", () => {
         .send({
           username: "wrongUsername",
           password: newUserData.password,
-          name: newUserData.name,
         })
         .expect(403);
     });
@@ -92,7 +96,6 @@ describe("Given a POST /users/login/ endpoint", () => {
         .send({
           username: newUserData.username,
           password: "wrong password",
-          name: newUserData.name,
         })
         .expect(403);
     });
