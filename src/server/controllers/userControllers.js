@@ -7,7 +7,7 @@ const User = require("../../database/models/User");
 
 const userRegister = async (req, res, next) => {
   try {
-    const { username, password, name } = req.body;
+    const { username, password, name, profilePicture } = req.body;
     const user = await User.findOne({ username });
 
     if (user) {
@@ -24,6 +24,7 @@ const userRegister = async (req, res, next) => {
       username,
       password: encryptedPassword,
       name,
+      profilePicture,
     });
 
     res.status(201).json({ username });
