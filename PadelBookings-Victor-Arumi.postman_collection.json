@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "0220fddc-e494-4655-8b7e-fef3ce361eb2",
+		"name": "PadelBookings-Victor-Arumi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20627640"
+	},
+	"item": [
+		{
+			"name": "user/register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{origin}}user/register",
+					"host": [
+						"{{origin}}user"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{origin}}user/login",
+					"host": [
+						"{{origin}}user"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
