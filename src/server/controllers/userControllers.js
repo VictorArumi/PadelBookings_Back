@@ -37,7 +37,7 @@ const userRegister = async (req, res, next) => {
 const userLogin = async (req, res, next) => {
   const { username, password } = req.body;
   try {
-    if (username === undefined) {
+    if (typeof username === "undefined") {
       const error = new Error();
       error.statusCode = 400;
       error.customMessage = "Bad request";
