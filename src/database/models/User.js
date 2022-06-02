@@ -14,6 +14,11 @@ const UserSchema = new Schema({
   profilePicture: {
     type: String,
   },
+  bookings: {
+    type: [Schema.Types.ObjectId],
+    ref: "Booking",
+    default: [],
+  },
 });
 
 const User = model("User", UserSchema, "users");
