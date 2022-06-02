@@ -61,54 +61,77 @@ describe("Given a POST /users/register/ endpoint", () => {
 
 describe("Given a POST /users/login/ endpoint", () => {
   describe("When it receives a request with an existing user and it's right password", () => {
-    test("Then it should respond with a 200 status code", async () => {
+    test("Then it should respond with a 200 status code and a token", async () => {
       const newUserLoginData = {
         username: newUserData.username,
         password: newUserData.password,
       };
 
-      await request(app).post("/user/register").send(newUserData).expect(201);
+      await request(app).post("/user/register").send(newUserData);
 
-      await request(app).post("/user/login").send(newUserLoginData).expect(200);
+      const {
+        body: { token },
+      } = await request(app)
+        .post("/user/login")
+        .send(newUserLoginData)
+        .expect(200);
+
+      expect(token).not.toBeNull();
     });
   });
 
   describe("When it receives a request with a wrong username", () => {
-    test("Then it should respond with a 403 status code", async () => {
-      await request(app).post("/user/register").send(newUserData).expect(201);
+    test("Then it should respond with a 403 status code, and a json with msg: 'Username or Password is wrong'", async () => {
+      const expectedErrorMessage = "Username or Password is wrong";
+      await User.create(newUserData);
 
-      await request(app)
+      const {
+        body: { msg },
+      } = await request(app)
         .post("/user/login")
         .send({
           username: "wrongUsername",
           password: newUserData.password,
         })
         .expect(403);
+
+      expect(msg).toBe(expectedErrorMessage);
     });
   });
 
   describe("When it receives a request with a wrong password", () => {
-    test("Then it should respond with a 403 status code", async () => {
-      await request(app).post("/user/register").send(newUserData).expect(201);
+    test("Then it should respond with a 403 status code and a json with msg: 'Username or Password is wrong'", async () => {
+      const expectedErrorMessage = "Username or Password is wrong";
+      await User.create(newUserData);
 
-      await request(app)
+      const {
+        body: { msg },
+      } = await request(app)
         .post("/user/login")
         .send({
           username: newUserData.username,
           password: "wrong password",
         })
         .expect(403);
+
+      expect(msg).toBe(expectedErrorMessage);
     });
   });
 
   describe("When it receives a request with wrong properties", () => {
     test("Then it should respond with a 400 status code", async () => {
-      await request(app).post("/user/register").send(newUserData).expect(201);
+      const expectedErrorMessage = "Bad request";
 
-      await request(app)
+      await User.create(newUserData);
+
+      const {
+        body: { msg },
+      } = await request(app)
         .post("/user/login")
         .send({ wrong: "wrong" })
         .expect(400);
+
+      expect(msg).toBe(expectedErrorMessage);
     });
   });
 });
