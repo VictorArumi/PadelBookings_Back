@@ -28,6 +28,11 @@ const BookingSchema = new Schema({
     ref: "User",
     default: [],
   },
+  open: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
 });
 
 const Booking = model("Booking", BookingSchema, "bookings");
