@@ -15,7 +15,7 @@ describe("Given a getBookings function", () => {
       await getBookings(null, res, null);
 
       expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
-      expect(res.json).toHaveBeenCalledWith(mockBookings);
+      expect(res.json).toHaveBeenCalledWith({ bookings: mockBookings });
     });
   });
 });
