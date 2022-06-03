@@ -1,5 +1,5 @@
 require("dotenv").config();
-const debug = require("debug")("padelbookings:server:controllers");
+const debug = require("debug")("padelbookings:server:user-controllers");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
