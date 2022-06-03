@@ -1,7 +1,10 @@
 const { Schema, model } = require("mongoose");
 
 const BookingSchema = new Schema({
-  club: String,
+  club: {
+    type: String,
+    required: true,
+  },
   owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
