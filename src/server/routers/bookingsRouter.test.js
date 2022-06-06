@@ -34,3 +34,35 @@ describe("Given a GET /bookings endpoint", () => {
     });
   });
 });
+
+describe("Given a DELETE /bookings/:id endpoint", () => {
+  describe("When it receives a request with existent item params id: '629a19fe5a16e50d33d55cb3'", () => {
+    test("Then it should return a message 'item deleted' and the id '629a19fe5a16e50d33d55cb3'", async () => {
+      const idToDelete = mockBookings[0].id;
+      const expectedMsg = "item deleted";
+      await Booking.create(mockBookings[0]);
+
+      const {
+        body: { msg, id },
+      } = await request(app).delete(`/bookings/${idToDelete}`).expect(200);
+
+      expect(msg).toBe(expectedMsg);
+      expect(id).toBe(idToDelete);
+    });
+  });
+
+  describe("When it receives a request with unexistent params id: 'non-existent'", () => {
+    test("Then it should return a message 'item deleted' and the id 'non-existent'", async () => {
+      const idToDelete = "non-existent";
+      const expectedMsg = "item deleted";
+      await Booking.create(mockBookings[0]);
+
+      const {
+        body: { msg, id },
+      } = await request(app).delete(`/bookings/${idToDelete}`).expect(200);
+
+      expect(msg).toBe(expectedMsg);
+      expect(id).toBe(idToDelete);
+    });
+  });
+});
