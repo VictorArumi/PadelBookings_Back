@@ -13,7 +13,6 @@ const BookingSchema = new Schema({
   date: {
     type: String,
     required: true,
-    unique: true,
   },
   hour: {
     type: String,

@@ -12,4 +12,16 @@ const getBookings = async (req, res) => {
   }
 };
 
-module.exports = { getBookings };
+const deleteBooking = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await Booking.findByIdAndRemove(id);
+    res.status(200).json({ msg: "pendienteeeeeeee" });
+  } catch {
+    const error = new Error();
+    error.statusCode = 404;
+  }
+};
+
+module.exports = { getBookings, deleteBooking };
