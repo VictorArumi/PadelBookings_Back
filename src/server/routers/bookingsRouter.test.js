@@ -18,6 +18,10 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
+afterEach(async () => {
+  await Booking.deleteMany({});
+});
+
 describe("Given a GET /bookings endpoint", () => {
   describe("When it receives a request", () => {
     test("Then it should return the database list of bookings", async () => {
@@ -38,31 +42,28 @@ describe("Given a GET /bookings endpoint", () => {
 describe("Given a DELETE /bookings/:id endpoint", () => {
   describe("When it receives a request with existent item params id: '629a19fe5a16e50d33d55cb3'", () => {
     test("Then it should return a message 'item deleted' and the id '629a19fe5a16e50d33d55cb3'", async () => {
-      const idToDelete = mockBookings[0].id;
-      const expectedMsg = "item deleted";
-      await Booking.create(mockBookings[0]);
+      const { id: idToDelete } = await Booking.create(mockBookings[0]);
+      const expectedMsg = `Item with id ${idToDelete} has been deleted`;
 
       const {
-        body: { msg, id },
+        body: { msg },
       } = await request(app).delete(`/bookings/${idToDelete}`).expect(200);
 
       expect(msg).toBe(expectedMsg);
-      expect(id).toBe(idToDelete);
     });
   });
 
   describe("When it receives a request with unexistent params id: 'non-existent'", () => {
     test("Then it should return a message 'item deleted' and the id 'non-existent'", async () => {
       const idToDelete = "non-existent";
-      const expectedMsg = "item deleted";
+      const expectedMsg = "Couldn't delete: non-existent item";
       await Booking.create(mockBookings[0]);
 
       const {
-        body: { msg, id },
-      } = await request(app).delete(`/bookings/${idToDelete}`).expect(200);
+        body: { msg },
+      } = await request(app).delete(`/bookings/${idToDelete}`).expect(404);
 
       expect(msg).toBe(expectedMsg);
-      expect(id).toBe(idToDelete);
     });
   });
 });

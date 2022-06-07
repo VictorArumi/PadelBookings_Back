@@ -2,13 +2,14 @@ const Booking = require("../../database/models/Booking");
 const mockBookings = require("../../mocks/mockBookings");
 const { getBookings, deleteBooking } = require("./bookingsControllers");
 
+const res = {
+  status: jest.fn().mockReturnThis(),
+  json: jest.fn(),
+};
+
 describe("Given a getBookings function", () => {
   describe("When it's invoked with a response", () => {
     test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
       const expectedStatusCode = 200;
       Booking.find = jest.fn().mockResolvedValue(mockBookings);
 
@@ -22,18 +23,16 @@ describe("Given a getBookings function", () => {
 
 describe("Given a deleteBooking function", () => {
   describe("When it's invoked with params id: deleteThisId", () => {
-    test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
+    test("Then it should call the response's method status with a 200, and json with msg: ", async () => {
       const idTodelete = "deleteThisId";
-      const expectedJson = { msg: "item deleted", id: idTodelete };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
+      const expectedJson = {
+        msg: `Item with id ${idTodelete} has been deleted`,
       };
       const req = {
         params: { id: idTodelete },
       };
       const expectedStatusCode = 200;
-      Booking.findByIdAndRemove = jest.fn();
+      Booking.findByIdAndDelete = jest.fn().mockResolvedValue(true);
 
       await deleteBooking(req, res);
 
@@ -43,23 +42,18 @@ describe("Given a deleteBooking function", () => {
   });
 
   describe("When it's invoked with an id that doesn't exist", () => {
-    test("Then it should call next", async () => {
+    test("Then it should call next with a 404 code and 'Couldn't delete: item not found' msg", async () => {
       const idTodelete = "deleteThisId";
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+
       const req = {
         params: { id: idTodelete },
       };
       const next = jest.fn();
       const expectedError = new Error();
-      expectedError.statusCode = 404;
-      expectedError.customMessage = "Couldn't delete: item not found";
 
-      Booking.findByIdAndRemove = jest.fn().mockRejectedValue(expectedError);
+      Booking.findByIdAndDelete = jest.fn().mockResolvedValue(null);
 
-      await deleteBooking(req, res, next);
+      await deleteBooking(req, null, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
     });
