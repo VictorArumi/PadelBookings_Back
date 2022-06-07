@@ -13,15 +13,19 @@ const getBookings = async (req, res, next) => {
 };
 
 const deleteBooking = async (req, res, next) => {
-  const { id } = req.params;
-
   try {
-    await Booking.findByIdAndRemove(id);
-    res.status(200).json({ msg: "item deleted", id });
-  } catch {
-    const error = new Error();
-    error.statusCode = 404;
-    error.customMessage = "Couldn't delete: item not found";
+    const { id } = req.params;
+    const findBooking = await Booking.findByIdAndDelete(id);
+
+    if (findBooking === null) {
+      const error = new Error();
+      error.statusCode = 404;
+      error.customMessage = "Couldn't delete: non-existent item";
+      next(error);
+      return;
+    }
+    res.status(200).json({ msg: `Item with id ${id} has been deleted` });
+  } catch (error) {
     next(error);
   }
 };
