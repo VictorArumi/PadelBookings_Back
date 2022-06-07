@@ -42,7 +42,7 @@ describe("Given a deleteBooking function", () => {
   });
 
   describe("When it's invoked with an id that doesn't exist", () => {
-    test("Then it should call next with a 404 code and 'Couldn't delete: item not found' msg", async () => {
+    test("Then it should call next with an error", async () => {
       const idTodelete = "deleteThisId";
 
       const req = {
