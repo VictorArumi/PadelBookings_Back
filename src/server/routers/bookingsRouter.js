@@ -4,10 +4,11 @@ const {
   getBookings,
   deleteBooking,
 } = require("../controllers/bookingsControllers");
+const auth = require("../middlewares/auth/auth");
 
 const bookingsRouter = express.Router();
 
-bookingsRouter.get("/", getBookings);
+bookingsRouter.get("/", auth, getBookings);
 bookingsRouter.delete("/:id", deleteBooking);
 
 module.exports = bookingsRouter;
