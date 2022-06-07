@@ -7,14 +7,14 @@ const getBookings = async (req, res, next) => {
     const bookings = await Booking.find();
     res.status(200).json({ bookings });
   } catch {
-    const error = new Error();
-    next(error);
+    next();
   }
 };
 
 const deleteBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
+
     const findBooking = await Booking.findByIdAndDelete(id);
 
     if (findBooking === null) {
@@ -26,6 +26,8 @@ const deleteBooking = async (req, res, next) => {
     }
     res.status(200).json({ msg: `Item with id ${id} has been deleted` });
   } catch (error) {
+    error.statusCode = 400;
+    error.customMessage = "Bad request";
     next(error);
   }
 };
