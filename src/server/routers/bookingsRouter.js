@@ -9,6 +9,6 @@ const auth = require("../middlewares/auth/auth");
 const bookingsRouter = express.Router();
 
 bookingsRouter.get("/", auth, getBookings);
-bookingsRouter.delete("/:id", deleteBooking);
+bookingsRouter.delete("/:id", auth, deleteBooking);
 
 module.exports = bookingsRouter;

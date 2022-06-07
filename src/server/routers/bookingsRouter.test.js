@@ -6,6 +6,7 @@ const app = require("..");
 const mockBookings = require("../../mocks/mockBookings");
 const Booking = require("../../database/models/Booking");
 const mockUser = require("../../mocks/mockUser");
+const User = require("../../database/models/User");
 
 let mongoServer;
 
@@ -19,14 +20,18 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
+beforeEach(async () => {
+  await request(app).post("/user/register").send(mockUser).expect(201);
+});
+
 afterEach(async () => {
+  await User.deleteMany({});
   await Booking.deleteMany({});
 });
 
 describe("Given a GET /bookings endpoint", () => {
   describe("When it receives a request", () => {
     test("Then it should return the database list of bookings", async () => {
-      await request(app).post("/user/register").send(mockUser).expect(201);
       await Booking.create(mockBookings[0]);
       await Booking.create(mockBookings[1]);
       const expectedBookings = 2;
@@ -60,10 +65,22 @@ describe("Given a DELETE /bookings/:id endpoint", () => {
     test("Then it should return a message 'item deleted' and the id '629a19fe5a16e50d33d55cb3'", async () => {
       const { id: idToDelete } = await Booking.create(mockBookings[0]);
       const expectedMsg = `Item with id ${idToDelete} has been deleted`;
+      const {
+        body: { token },
+      } = await request(app)
+        .post("/user/login")
+        .send({
+          username: mockUser.username,
+          password: mockUser.password,
+        })
+        .expect(200);
 
       const {
         body: { msg },
-      } = await request(app).delete(`/bookings/${idToDelete}`).expect(200);
+      } = await request(app)
+        .delete(`/bookings/${idToDelete}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(200);
 
       expect(msg).toBe(expectedMsg);
     });
@@ -76,8 +93,21 @@ describe("Given a DELETE /bookings/:id endpoint", () => {
       await Booking.create(mockBookings[0]);
 
       const {
+        body: { token },
+      } = await request(app)
+        .post("/user/login")
+        .send({
+          username: mockUser.username,
+          password: mockUser.password,
+        })
+        .expect(200);
+
+      const {
         body: { msg },
-      } = await request(app).delete(`/bookings/${idToDelete}`).expect(404);
+      } = await request(app)
+        .delete(`/bookings/${idToDelete}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(404);
 
       expect(msg).toBe(expectedMsg);
     });
