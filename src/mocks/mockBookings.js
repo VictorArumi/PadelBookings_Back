@@ -19,4 +19,13 @@ const mockBookings = [
   },
 ];
 
-module.exports = mockBookings;
+const mockNewBookingBody = {
+  club: "RCTB",
+  owner: "6299261c885d2211475ec5ec",
+  date: "25/10/2022",
+  hour: "17",
+  courtType: "Outdoor",
+  players: [],
+};
+
+module.exports = { mockBookings, mockNewBookingBody };
