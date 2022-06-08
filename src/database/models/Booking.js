@@ -21,16 +21,18 @@ const BookingSchema = new Schema({
   courtType: {
     type: String,
     enum: ["Indoor", "Outdoor"],
+    required: true,
   },
   players: {
     type: [Schema.Types.ObjectId],
     ref: "User",
     default: [],
+    required: true,
   },
   open: {
     type: Boolean,
-    required: true,
     default: true,
+    required: true,
   },
 });
 
