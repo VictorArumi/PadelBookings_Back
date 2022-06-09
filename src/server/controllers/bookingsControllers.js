@@ -50,4 +50,20 @@ const deleteBooking = async (req, res, next) => {
   }
 };
 
-module.exports = { getBookings, deleteBooking, createBooking };
+const editBooking = async (req, res, next) => {
+  const { id } = req.params;
+  const booking = req.body;
+
+  try {
+    const updatedBooking = await Booking.findByIdAndUpdate(id, booking, {
+      new: true,
+    });
+    res.status(200).json({ updatedBooking });
+  } catch (error) {
+    error.statusCode = 404;
+    error.customMessage = "Error, booking not found";
+    next(error);
+  }
+};
+
+module.exports = { getBookings, deleteBooking, createBooking, editBooking };
