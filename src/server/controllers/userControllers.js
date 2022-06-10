@@ -43,7 +43,7 @@ const userRegister = async (req, res, next) => {
       username,
       password: encryptedPassword,
       name,
-      profilePicture: file ? path.join("images", newImageName) : "",
+      profilePicture: newImageName,
     });
 
     res.status(201).json({ username });
