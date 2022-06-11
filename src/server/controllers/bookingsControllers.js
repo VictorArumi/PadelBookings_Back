@@ -13,6 +13,17 @@ const getBookings = async (req, res, next) => {
   }
 };
 
+const getBooking = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const booking = await Booking.findById(id);
+    res.status(200).json({ booking });
+    debug(chalk.green(`Booking with id ${id} list delivered`));
+  } catch {
+    next();
+  }
+};
+
 const createBooking = async (req, res, next) => {
   try {
     const newBookingData = req.body;
@@ -66,4 +77,10 @@ const editBooking = async (req, res, next) => {
   }
 };
 
-module.exports = { getBookings, deleteBooking, createBooking, editBooking };
+module.exports = {
+  getBookings,
+  getBooking,
+  deleteBooking,
+  createBooking,
+  editBooking,
+};
