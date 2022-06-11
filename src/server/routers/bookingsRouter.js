@@ -6,6 +6,7 @@ const {
   deleteBooking,
   createBooking,
   editBooking,
+  getBooking,
 } = require("../controllers/bookingsControllers");
 const auth = require("../middlewares/auth/auth");
 const newBookingSchema = require("../schemas/newBookingSchema");
@@ -13,6 +14,7 @@ const newBookingSchema = require("../schemas/newBookingSchema");
 const bookingsRouter = express.Router();
 
 bookingsRouter.get("/", auth, getBookings);
+bookingsRouter.get("/detail/:id", auth, getBooking);
 bookingsRouter.delete("/:id", auth, deleteBooking);
 bookingsRouter.post("/create", auth, validate(newBookingSchema), createBooking);
 bookingsRouter.put("/edit/:id", auth, validate(newBookingSchema), editBooking);

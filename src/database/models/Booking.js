@@ -23,12 +23,14 @@ const BookingSchema = new Schema({
     enum: ["Indoor", "Outdoor"],
     required: true,
   },
-  players: {
-    type: [Schema.Types.ObjectId],
-    ref: "User",
-    default: [],
-    required: true,
-  },
+  players: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+      required: true,
+    },
+  ],
   open: {
     type: Boolean,
     default: true,
