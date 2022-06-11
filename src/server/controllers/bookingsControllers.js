@@ -2,6 +2,7 @@ require("dotenv").config();
 const debug = require("debug")("padelbookings:server:booking-controllers");
 const chalk = require("chalk");
 const Booking = require("../../database/models/Booking");
+const User = require("../../database/models/User");
 
 const getBookings = async (req, res, next) => {
   try {
@@ -17,8 +18,19 @@ const getBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
-    res.status(200).json({ booking });
-    debug(chalk.green(`Booking with id ${id} list delivered`));
+
+    const bookingWithPopulatedPlayers = await Booking.findById(id).populate(
+      "players",
+      null,
+      User
+    );
+
+    const playersUsernames = bookingWithPopulatedPlayers.players.map(
+      (user) => user.username
+    );
+
+    res.status(200).json({ booking, playersUsernames });
+    debug(chalk.green(`Booking with id ${id} delivered`));
   } catch {
     next();
   }
