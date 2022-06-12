@@ -13,7 +13,7 @@ const newBookingSchema = require("../schemas/newBookingSchema");
 
 const bookingsRouter = express.Router();
 
-bookingsRouter.get("/", auth, getBookings);
+bookingsRouter.get("/limit=:limit&page=:page", getBookings);
 bookingsRouter.get("/detail/:id", auth, getBooking);
 bookingsRouter.delete("/:id", auth, deleteBooking);
 bookingsRouter.post("/create", auth, validate(newBookingSchema), createBooking);

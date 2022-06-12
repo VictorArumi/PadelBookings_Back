@@ -34,7 +34,11 @@ describe("Given a GET /bookings endpoint", () => {
     test("Then it should return the database list of bookings", async () => {
       await Booking.create(mockBookings[0]);
       await Booking.create(mockBookings[1]);
-      const expectedBookings = 2;
+      await Booking.create(mockBookings[2]);
+      await Booking.create(mockBookings[3]);
+
+      const limit = 2;
+      const page = 2;
 
       const {
         body: { token },
@@ -49,13 +53,13 @@ describe("Given a GET /bookings endpoint", () => {
       const {
         body: { bookings },
       } = await request(app)
-        .get("/bookings")
+        .get(`/bookings/limit=${limit}&page=${page}`)
         .set("Authorization", `Bearer ${token}`)
         .expect(200);
 
-      expect(bookings[0].club).toBe(mockBookings[0].club);
-      expect(bookings[1].owner).toBe(mockBookings[1].owner);
-      expect(bookings).toHaveLength(expectedBookings);
+      expect(bookings[0].club).toBe(mockBookings[2].club);
+      expect(bookings[1].owner).toBe(mockBookings[3].owner);
+      expect(bookings).toHaveLength(limit);
     });
   });
 });

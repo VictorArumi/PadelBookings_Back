@@ -5,10 +5,26 @@ const Booking = require("../../database/models/Booking");
 const User = require("../../database/models/User");
 
 const getBookings = async (req, res, next) => {
+  const { limit, page } = req.params;
+
+  debug(chalk.green("hasta aqui llego"));
+  if (!(limit && page)) {
+    const error = new Error();
+    error.statusCode = 400;
+    error.customMessage = "Missing pagination data";
+
+    debug(chalk.red(error.customMessage));
+
+    next(error);
+  }
+
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find()
+      .limit(limit)
+      .skip(limit * (page - 1));
     res.status(200).json({ bookings });
-    debug(chalk.green(`Bookings list delivered`));
+
+    debug(chalk.green(`Bookings delivered`));
   } catch {
     next();
   }
