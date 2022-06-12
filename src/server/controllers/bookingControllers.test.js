@@ -16,18 +16,64 @@ const res = {
   json: jest.fn(),
 };
 
+jest.mock("../../database/models/Booking", () => ({
+  ...jest.requireActual("../../database/models/Booking"),
+  skip: jest.fn().mockResolvedValue([
+    {
+      club: "RCPB",
+      owner: "6299261c885d2211475ec5ec",
+      date: "12/05/2622",
+      hour: "20",
+      courtType: "Outdoor",
+      players: [],
+      id: "629a19fe5a16e50d33d55cc3",
+    },
+    {
+      club: "otroclub",
+      owner: "6299261c885d2211475ec5ec",
+      date: "12/05/1922",
+      hour: "5",
+      courtType: "Indoor",
+      players: [],
+      id: "629a19fe5a16e50d33d55cc3",
+    },
+  ]),
+  limit: jest.fn().mockReturnThis(),
+  find: jest.fn().mockReturnThis(),
+  findById: jest
+    .fn()
+    .mockResolvedValueOnce({
+      club: "RCTB",
+      owner: "6299261c885d2211475ec5ec",
+      date: "25/10/2022",
+      hour: "17",
+      courtType: "Outdoor",
+      players: [],
+      id: "629a19fe5a16e50d33d55cb3",
+    })
+    .mockReturnThis(),
+  populate: jest.fn().mockReturnValue(["lolailooo"]),
+}));
+
 const next = jest.fn();
 
 describe("Given a getBookings function", () => {
   describe("When it's invoked with a response", () => {
     test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
       const expectedStatusCode = 200;
-      Booking.find = jest.fn().mockResolvedValue(mockBookings);
+      const req = {
+        params: {
+          limit: 2,
+          page: 2,
+        },
+      };
 
-      await getBookings(null, res, null);
+      await getBookings(req, res, null);
 
       expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
-      expect(res.json).toHaveBeenCalledWith({ bookings: mockBookings });
+      expect(res.json).toHaveBeenCalledWith({
+        bookings: [mockBookings[2], mockBookings[3]],
+      });
     });
   });
 });
@@ -41,7 +87,6 @@ describe.skip("Given a getBooking function", () => {
       const req = {
         params: { id: bookingId },
       };
-      Booking.findById = jest.fn().mockResolvedValue(mockBookings[0]);
 
       await getBooking(req, res, null);
 
