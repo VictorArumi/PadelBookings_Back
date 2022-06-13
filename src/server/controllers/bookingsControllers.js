@@ -6,7 +6,7 @@ const User = require("../../database/models/User");
 
 const getBookings = async (req, res, next) => {
   const { limit, page } = req.params;
-  const { type, status } = req.query;
+  const { type, status, date, user } = req.query;
   debug(type);
   if (!(limit && page)) {
     const error = new Error();
@@ -18,15 +18,23 @@ const getBookings = async (req, res, next) => {
     next(error);
   }
 
-  const getFilters = () => {
-    if (type && status) return { courtType: type, open: status };
-    if (type) return { courtType: type };
-    if (status) return { open: status };
-    return {};
-  };
+  const queryFilter = {};
+
+  if (type) {
+    queryFilter.courtType = type;
+  }
+  if (status) {
+    queryFilter.open = status;
+  }
+  if (date) {
+    queryFilter.date = date;
+  }
+  if (user) {
+    queryFilter.players = user;
+  }
 
   try {
-    const bookings = await Booking.find(getFilters())
+    const bookings = await Booking.find(queryFilter)
       .limit(limit)
       .skip(limit * (page - 1));
     res.status(200).json({ bookings });
