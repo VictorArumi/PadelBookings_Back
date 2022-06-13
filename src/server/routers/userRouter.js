@@ -4,6 +4,7 @@ const { validate } = require("express-validation");
 const multer = require("multer");
 const path = require("path");
 const { userRegister, userLogin } = require("../controllers/userControllers");
+const firebase = require("../middlewares/firebase/firebase");
 const userRegisterCredentialsSchema = require("../schemas/userCredentialsSchema");
 
 const userRouter = express.Router();
@@ -20,6 +21,7 @@ userRouter.post(
   "/register",
   upload.single("profilePicture"),
   validate(userRegisterCredentialsSchema),
+  firebase,
   userRegister
 );
 

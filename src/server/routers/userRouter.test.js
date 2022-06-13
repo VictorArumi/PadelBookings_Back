@@ -4,8 +4,16 @@ const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
 const app = require("..");
 const User = require("../../database/models/User");
+const mockUser = require("../../mocks/mockUser");
 
 let mongoServer;
+
+jest.mock("firebase/storage", () => ({
+  ref: jest.fn().mockReturnValue("profilePicture"),
+  uploadBytes: jest.fn().mockResolvedValue(),
+  getStorage: jest.fn(),
+  getDownloadURL: jest.fn().mockResolvedValue("url"),
+}));
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -31,7 +39,19 @@ const newUserData = {
 describe("Given a POST /users/register/ endpoint", () => {
   describe("When it receives a request with a valid new user", () => {
     test("Then it should respond with 201 status code", async () => {
-      await request(app).post("/user/register").send(newUserData).expect(201);
+      const { body } = await request(app)
+        .post("/user/register")
+        .type("multipart/formd-ata")
+        .field("username", mockUser.username)
+        .field("password", mockUser.password)
+        .field("name", mockUser.name)
+        .attach("profilePicture", Buffer.from("mockImageString", "utf-8"), {
+          filename: "mockiamge",
+          originalname: "image.jpg",
+        })
+        .expect(201);
+
+      expect(body).toEqual({ username: mockUser.username });
     });
   });
 

@@ -14,6 +14,10 @@ const UserSchema = new Schema({
   profilePicture: {
     type: String,
   },
+  profilePictureBackup: {
+    type: String,
+  },
+
   bookings: {
     type: [Schema.Types.ObjectId],
     ref: "Booking",

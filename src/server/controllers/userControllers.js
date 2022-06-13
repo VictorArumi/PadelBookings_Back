@@ -2,15 +2,13 @@ require("dotenv").config();
 const debug = require("debug")("padelbookings:server:user-controllers");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const fs = require("fs");
-const path = require("path");
 const chalk = require("chalk");
 const User = require("../../database/models/User");
 
 const userRegister = async (req, res, next) => {
   try {
-    const { username, password, name } = req.body;
-    const { file } = req;
+    const { username, password, name, profilePicture, profilePictureBackup } =
+      req.body;
 
     const user = await User.findOne({ username });
 
@@ -23,27 +21,14 @@ const userRegister = async (req, res, next) => {
       return;
     }
 
-    const newImageName = file ? `${Date.now()}${file.originalname}` : "";
-
-    if (file) {
-      fs.rename(
-        path.join("uploads", "images", file.filename),
-        path.join("uploads", "images", newImageName),
-        async (error) => {
-          if (error) {
-            next(error);
-          }
-        }
-      );
-    }
-
     const encryptedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
       username,
       password: encryptedPassword,
       name,
-      profilePicture: newImageName,
+      profilePicture,
+      profilePictureBackup,
     });
 
     res.status(201).json({ username });
