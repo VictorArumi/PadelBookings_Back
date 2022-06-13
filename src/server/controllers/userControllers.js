@@ -79,6 +79,7 @@ const userLogin = async (req, res, next) => {
       name: user.name,
       username: user.username,
       profilePicture: user.profilePicture,
+      profilePictureBackup: user.profilePictureBackup,
     };
     const token = jwt.sign(userData, process.env.JWT_SECRET);
     debug(chalk.blueBright(`User ${userData.username} logged in`));
