@@ -58,15 +58,20 @@ jest.mock("../../database/models/Booking", () => ({
 const next = jest.fn();
 
 describe("Given a getBookings function", () => {
-  describe("When it's invoked with a response", () => {
+  describe("When it's invoked with a request with limit and page params, and type,status,date,user", () => {
     test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
       const expectedStatusCode = 200;
       const req = {
         params: {
           limit: 2,
-          page: 2,
+          page: 1,
         },
-        query: {},
+        query: {
+          type: "Outdoor",
+          status: true,
+          date: "25/10/2022",
+          user: "6299261c885d2211475ec5ec",
+        },
       };
 
       await getBookings(req, res, null);
