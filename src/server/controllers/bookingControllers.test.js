@@ -66,6 +66,7 @@ describe("Given a getBookings function", () => {
           limit: 2,
           page: 2,
         },
+        query: {},
       };
 
       await getBookings(req, res, null);
