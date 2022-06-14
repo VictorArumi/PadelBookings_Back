@@ -71,6 +71,7 @@ describe("Given a getBookings function", () => {
           status: true,
           date: "25/10/2022",
           user: "6299261c885d2211475ec5ec",
+          owner: "6299261c885d2211475ec5ec",
         },
       };
 
