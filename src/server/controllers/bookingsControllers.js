@@ -123,10 +123,31 @@ const editBooking = async (req, res, next) => {
   }
 };
 
+const editBookingPlayers = async (req, res, next) => {
+  const { id } = req.params;
+  const players = req.body;
+
+  try {
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { $set: { players } },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({ updatedBooking });
+  } catch (error) {
+    error.statusCode = 404;
+    error.customMessage = "Error, booking not found";
+    next(error);
+  }
+};
+
 module.exports = {
   getBookings,
   getBooking,
   deleteBooking,
   createBooking,
   editBooking,
+  editBookingPlayers,
 };

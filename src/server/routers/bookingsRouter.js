@@ -7,6 +7,7 @@ const {
   createBooking,
   editBooking,
   getBooking,
+  editBookingPlayers,
 } = require("../controllers/bookingsControllers");
 const auth = require("../middlewares/auth/auth");
 const newBookingSchema = require("../schemas/newBookingSchema");
@@ -18,5 +19,6 @@ bookingsRouter.get("/detail/:id", auth, getBooking);
 bookingsRouter.delete("/:id", auth, deleteBooking);
 bookingsRouter.post("/create", auth, validate(newBookingSchema), createBooking);
 bookingsRouter.put("/edit/:id", auth, validate(newBookingSchema), editBooking);
+bookingsRouter.put("/edit/addplayer/:id", auth, editBookingPlayers);
 
 module.exports = bookingsRouter;

@@ -9,6 +9,7 @@ const {
   createBooking,
   editBooking,
   getBooking,
+  editBookingPlayers,
 } = require("./bookingsControllers");
 
 const res = {
@@ -211,6 +212,34 @@ describe("Given a editBooking function", () => {
       await editBooking(req, null, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given a editBookingPlayers function", () => {
+  describe("When it's invoked with params id: editThisId and a array of players", () => {
+    test("Then it should call the response's method status with a 200, and json with property updatedBooking with the updated booking with a new player in the players array", async () => {
+      const idToEdit = mockBookings[0].id;
+      const expectedJson = {
+        updatedBooking: {
+          ...mockBookings[0],
+          players: ["62a3a6358875bd6b7be217b0", "62a370a93425175ce845e6d3"],
+        },
+      };
+      const req = {
+        params: { id: idToEdit },
+        body: ["62a3a6358875bd6b7be217b0", "62a370a93425175ce845e6d3"],
+      };
+      const expectedStatusCode = 200;
+      Booking.findByIdAndUpdate = jest.fn().mockResolvedValue({
+        ...mockBookings[0],
+        players: ["62a3a6358875bd6b7be217b0", "62a370a93425175ce845e6d3"],
+      });
+
+      await editBookingPlayers(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+      expect(res.json).toHaveBeenCalledWith(expectedJson);
     });
   });
 });
