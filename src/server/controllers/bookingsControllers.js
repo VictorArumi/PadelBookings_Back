@@ -6,7 +6,7 @@ const User = require("../../database/models/User");
 
 const getBookings = async (req, res, next) => {
   const { limit, page } = req.params;
-  const { type, status, date, user } = req.query;
+  const { type, status, date, user, owner } = req.query;
   debug(type);
   if (!(limit && page)) {
     const error = new Error();
@@ -31,6 +31,9 @@ const getBookings = async (req, res, next) => {
   }
   if (user) {
     queryFilter.players = user;
+  }
+  if (owner) {
+    queryFilter.owner = owner;
   }
 
   try {
