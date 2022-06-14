@@ -127,10 +127,12 @@ const editBookingPlayers = async (req, res, next) => {
   const { id } = req.params;
   const players = req.body;
 
+  const newStatus = !players.length === 4;
+
   try {
     const updatedBooking = await Booking.findByIdAndUpdate(
       id,
-      { $set: { players } },
+      { $set: { players, open: newStatus } },
       {
         new: true,
       }
