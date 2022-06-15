@@ -102,7 +102,7 @@ describe("Given a POST /users/login/ endpoint", () => {
 
   describe("When it receives a request with a wrong username", () => {
     test("Then it should respond with a 403 status code, and a json with msg: 'Username or Password is wrong'", async () => {
-      const expectedErrorMessage = "Username or Password is wrong";
+      const expectedErrorMessage = "Usuario o contraseña erróneos";
       await User.create(newUserData);
 
       const {
@@ -121,7 +121,7 @@ describe("Given a POST /users/login/ endpoint", () => {
 
   describe("When it receives a request with a wrong password", () => {
     test("Then it should respond with a 403 status code and a json with msg: 'Username or Password is wrong'", async () => {
-      const expectedErrorMessage = "Username or Password is wrong";
+      const expectedErrorMessage = "Usuario o contraseña erróneos";
       await User.create(newUserData);
 
       const {

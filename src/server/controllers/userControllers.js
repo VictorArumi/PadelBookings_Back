@@ -15,7 +15,7 @@ const userRegister = async (req, res, next) => {
     if (user) {
       const error = new Error();
       error.statusCode = 409;
-      error.customMessage = "This username already exists";
+      error.customMessage = "Este nombre de usuario ya existe";
 
       next(error);
       return;
@@ -57,7 +57,7 @@ const userLogin = async (req, res, next) => {
       const error = new Error();
       debug(chalk.red("Wrong username"));
       error.statusCode = 403;
-      error.customMessage = "Username or Password is wrong";
+      error.customMessage = "Usuario o contraseña erróneos";
 
       next(error);
       return;
@@ -68,7 +68,7 @@ const userLogin = async (req, res, next) => {
       const error = new Error();
       debug(chalk.red("Wrong Password"));
       error.statusCode = 403;
-      error.customMessage = "Username or Password is wrong";
+      error.customMessage = "Usuario o contraseña erróneos";
 
       next(error);
       return;
