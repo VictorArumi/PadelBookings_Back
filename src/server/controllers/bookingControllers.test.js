@@ -84,6 +84,29 @@ describe("Given a getBookings function", () => {
       });
     });
   });
+
+  describe("When it's invoked with a request with falsy page", () => {
+    test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
+      const expectedError = new Error();
+      const req = {
+        params: {
+          limit: 2,
+          page: false,
+        },
+        query: {
+          type: "Outdoor",
+          status: true,
+          date: "25/10/2022",
+          user: "6299261c885d2211475ec5ec",
+          owner: "6299261c885d2211475ec5ec",
+        },
+      };
+
+      await getBookings(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
 });
 
 describe.skip("Given a getBooking function", () => {
