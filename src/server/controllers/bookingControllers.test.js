@@ -107,6 +107,32 @@ describe("Given a getBookings function", () => {
       expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
+
+  describe("When the query gives an error", () => {
+    test("Then it should call next with an error", async () => {
+      const req = {
+        params: {
+          limit: 2,
+          page: 1,
+        },
+        query: {
+          type: "Outdoor",
+          status: true,
+          date: "25/10/2022",
+          user: "6299261c885d2211475ec5ec",
+          owner: "6299261c885d2211475ec5ec",
+        },
+      };
+
+      const expectedError = new Error();
+
+      Booking.find = jest.fn().mockResolvedValue(null);
+
+      await getBookings(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
 });
 
 describe.skip("Given a getBooking function", () => {
@@ -158,6 +184,18 @@ describe("Given a deleteBooking function", () => {
       const expectedError = new Error();
 
       Booking.findByIdAndDelete = jest.fn().mockResolvedValue(null);
+
+      await deleteBooking(req, null, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("When it's invoked with no id", () => {
+    test("Then it should call next with an error", async () => {
+      const req = {};
+
+      const expectedError = new Error();
 
       await deleteBooking(req, null, next);
 
@@ -263,6 +301,22 @@ describe("Given a editBookingPlayers function", () => {
 
       expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
       expect(res.json).toHaveBeenCalledWith(expectedJson);
+    });
+  });
+
+  describe("When it's invoked with params id: editThisId and a array of players", () => {
+    test("Then it should call the response's method status with a 200, and json with property updatedBooking with the updated booking with a new player in the players array", async () => {
+      const req = {
+        params: {},
+        body: {},
+      };
+
+      const expectedError = new Error();
+      Booking.findByIdAndUpdate = jest.fn().mockRejectedValue(expectedError);
+
+      await editBookingPlayers(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
