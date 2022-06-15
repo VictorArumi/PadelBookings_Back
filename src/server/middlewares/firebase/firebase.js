@@ -24,10 +24,9 @@ const firebase = async (req, res, next) => {
 
   const { file } = req;
 
+  const newFileName = file ? `${Date.now()}${file.originalname}` : "";
   try {
     if (file) {
-      const newFileName = file ? `${Date.now()}${file.originalname}` : "";
-
       fs.rename(
         path.join("uploads", "images", file.filename),
         path.join("uploads", "images", newFileName),
@@ -66,10 +65,6 @@ const firebase = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    error.statusCode = 400;
-    error.customMessage = "Couldn't process images";
-    debug(chalk.red(error.message));
-
     next(error);
   }
 };
