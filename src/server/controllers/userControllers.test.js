@@ -1,7 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const User = require("../../database/models/User");
-const { userRegister } = require("./userControllers");
+const { userRegister, userLogin } = require("./userControllers");
 
 const mockNewUser = {
   username: "john",
@@ -77,6 +77,26 @@ describe("Given a register user function", () => {
       User.findOne = jest.fn().mockRejectedValue(expectedError);
 
       await userRegister(req, res, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given a login user function", () => {
+  describe("When the user in de database has wrong info", () => {
+    test("Then it should call next with an error", async () => {
+      const req = {
+        body: { username: "john", password: "smith99" },
+      };
+
+      User.findOne.mockImplementation(() => false);
+
+      const expectedError = new Error();
+
+      User.findOne = jest.fn().mockRejectedValue(expectedError);
+
+      await userLogin(req, null, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expectedError);
     });
