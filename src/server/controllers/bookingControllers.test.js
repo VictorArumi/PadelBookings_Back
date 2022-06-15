@@ -135,20 +135,19 @@ describe("Given a getBookings function", () => {
   });
 });
 
-describe.skip("Given a getBooking function", () => {
-  describe("When it's invoked with a response and id in params", () => {
+describe("Given a getBooking function", () => {
+  describe("When it's invoked with a response and null id", () => {
     test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
-      const expectedStatusCode = 200;
-      const bookingId = "findThisId";
-
       const req = {
-        params: { id: bookingId },
+        params: { id: null },
       };
 
-      await getBooking(req, res, null);
+      const expectedError = new Error();
 
-      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
-      expect(res.json).toHaveBeenCalledWith({ booking: mockBookings[0] });
+      Booking.find = jest.fn().mockResolvedValue(null);
+      await getBooking(req, null, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
