@@ -11,7 +11,7 @@ const userRegisterCredentialsSchema = {
       .max(20)
       .messages({ message: "Password is required" })
       .required(),
-    name: Joi.string().min(4).max(20),
+    name: Joi.string().max(20),
     profilePicture: Joi.string().allow(null, ""),
   }),
 };
