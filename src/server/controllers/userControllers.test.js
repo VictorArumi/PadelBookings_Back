@@ -25,16 +25,17 @@ describe("Given a register user function", () => {
         body: { username: "john", password: "smith99" },
       };
 
-      User.findOne.mockImplementation(() => false);
-
       const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
       };
 
+      User.findOne.mockImplementation(() => false);
+      bcrypt.hash.mockImplementation(() => "smith99HashedPassword");
+
       const expectedStatus = 201;
       const expectedJson = { username: "john" };
-      bcrypt.hash.mockImplementation(() => "smith99HashedPassword");
+
       await userRegister(req, res, null);
 
       expect(res.status).toHaveBeenCalledWith(expectedStatus);
