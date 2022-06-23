@@ -7,7 +7,7 @@ const User = require("../../database/models/User");
 const getBookings = async (req, res, next) => {
   const { limit, page } = req.params;
   const { type, status, date, user, owner } = req.query;
-  debug(type);
+
   if (!(limit && page)) {
     const error = new Error();
     error.statusCode = 400;
@@ -40,6 +40,7 @@ const getBookings = async (req, res, next) => {
     const bookings = await Booking.find(queryFilter)
       .limit(limit)
       .skip(limit * (page - 1));
+
     res.status(200).json({ bookings });
 
     debug(chalk.green(`Bookings delivered`));
