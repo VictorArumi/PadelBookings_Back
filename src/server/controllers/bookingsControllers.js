@@ -53,22 +53,30 @@ const getBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
+    req.booking = booking;
 
-    const bookingWithPopulatedPlayers = await Booking.findById(id).populate(
-      "players",
-      null,
-      User
-    );
-
-    const playersUsernames = bookingWithPopulatedPlayers.players.map(
-      (user) => user.username
-    );
-
-    res.status(200).json({ booking, playersUsernames });
-    debug(chalk.green(`Booking with id ${id} delivered`));
+    next();
   } catch {
     next();
   }
+};
+
+const getBookingAndPlayersUsernames = async (req, res) => {
+  const { id } = req.params;
+
+  const { booking } = req;
+  const bookingWithPopulatedPlayers = await Booking.findById(id).populate(
+    "players",
+    null,
+    User
+  );
+
+  const playersUsernames = bookingWithPopulatedPlayers.players.map(
+    (user) => user.username
+  );
+
+  res.status(200).json({ booking, playersUsernames });
+  debug(chalk.green(`Booking with id ${id} delivered`));
 };
 
 const createBooking = async (req, res, next) => {
@@ -148,6 +156,7 @@ const editBookingPlayers = async (req, res, next) => {
 
 module.exports = {
   getBookings,
+  getBookingAndPlayersUsernames,
   getBooking,
   deleteBooking,
   createBooking,
