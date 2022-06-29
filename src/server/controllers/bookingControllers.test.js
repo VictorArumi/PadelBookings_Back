@@ -10,6 +10,7 @@ const {
   editBooking,
   getBooking,
   editBookingPlayers,
+  getBookingAndPlayersUsernames,
 } = require("./bookingsControllers");
 
 const res = {
@@ -41,19 +42,6 @@ jest.mock("../../database/models/Booking", () => ({
   ]),
   limit: jest.fn().mockReturnThis(),
   find: jest.fn().mockReturnThis(),
-  findById: jest
-    .fn()
-    .mockResolvedValueOnce({
-      club: "RCTB",
-      owner: "6299261c885d2211475ec5ec",
-      date: "25/10/2022",
-      hour: "17",
-      courtType: "Outdoor",
-      players: [],
-      id: "629a19fe5a16e50d33d55cb3",
-    })
-    .mockReturnThis(),
-  populate: jest.fn().mockReturnValue(["lolailooo"]),
 }));
 
 const next = jest.fn();
@@ -136,18 +124,60 @@ describe("Given a getBookings function", () => {
 });
 
 describe("Given a getBooking function", () => {
-  describe("When it's invoked with a response and null id", () => {
-    test("Then it should call the response's method status with a 200, and json method with a list of bookings", async () => {
+  describe("When it's invoked with a request with valid id in params", () => {
+    test("Then it should call next", async () => {
       const req = {
-        params: { id: null },
+        params: { id: "testId" },
       };
 
-      const expectedError = new Error();
-
-      Booking.find = jest.fn().mockResolvedValue(null);
+      Booking.findById = jest.fn().mockResolvedValue(mockBookings[2]);
       await getBooking(req, null, next);
 
-      expect(next).toHaveBeenCalledWith(expectedError);
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe("When it's invoked with a request with no id in params", () => {
+    test("Then it should call next", async () => {
+      const req = {};
+
+      Booking.findById = jest.fn().mockResolvedValue(mockBookings[2]);
+      await getBooking(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given a getBookingAndPlayersUsernames function", () => {
+  describe("When it's invoked with valid id", () => {
+    test("Then it should call the response's method status with a 200, and json method with the booking and the players usernames", async () => {
+      const req = {
+        params: { id: "testId" },
+        booking: mockBookings[2],
+      };
+      const playersUsernames = ["name1", "name2", "name3", "name4"];
+      const expectedStatusCode = 200;
+
+      Booking.findById = jest.fn(() => ({
+        populate: jest.fn().mockReturnValue({
+          ...mockBookings[2],
+          players: [
+            { username: "name1" },
+            { username: "name2" },
+            { username: "name3" },
+            { username: "name4" },
+          ],
+        }),
+      }));
+
+      await getBookingAndPlayersUsernames(req, res, null);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+      expect(res.json).toHaveBeenCalledWith({
+        booking: mockBookings[2],
+        playersUsernames,
+      });
     });
   });
 });
