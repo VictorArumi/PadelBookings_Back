@@ -6,23 +6,23 @@ jest.mock("firebase/storage", () => ({
   ref: jest.fn().mockReturnValue("avatarRef"),
   uploadBytes: jest.fn().mockResolvedValue({}),
   getStorage: jest.fn(),
-  getDownloadURL: jest.fn().mockResolvedValue("firebaseFileURL"),
+  getDownloadURL: jest.fn().mockResolvedValue("urlImageFirebase"),
 }));
 
-describe("Given a firebase middleware", () => {
-  describe("When it receives a request without a file", () => {
-    test("Then it should call next", async () => {
-      const req = { file: null };
-
+describe("Given a firebaseUpload middleware", () => {
+  describe("When it's invoked without a file", () => {
+    test("Then it should call the next function", async () => {
       const next = jest.fn();
+      const req = {};
+
       await firebase(req, null, next);
 
       expect(next).toHaveBeenCalled();
     });
   });
 
-  describe("When the rename method fails", () => {
-    test("Then it should call the received next function with the error 'renameError'", async () => {
+  describe("When it's invoked with file and rename throw error", () => {
+    test("Then it should call the next function", async () => {
       jest
         .spyOn(path, "join")
         .mockReturnValue(`${path.join("uploads", "images")}`);
@@ -49,27 +49,52 @@ describe("Given a firebase middleware", () => {
   });
 
   describe("When it's invoked with file and readFile throw error", () => {
-    test("Then it should call next", async () => {
-      const expectedError = "Error reading file";
+    test("Then it should call the next function", async () => {
       jest
         .spyOn(path, "join")
         .mockReturnValue(`${path.join("uploads", "images")}`);
 
       jest
         .spyOn(fs, "rename")
-        .mockImplementation((oldpath, newpath, callback) => {
+        .mockImplementation((oldPath, newPath, callback) => {
           callback();
         });
 
       jest.spyOn(fs, "readFile").mockImplementation((pathToRead, callback) => {
-        callback(expectedError);
+        callback("readFileError");
       });
+
       const next = jest.fn();
-      const req = { body: {}, file: { originalname: "picture1.jpg" } };
+      const req = {
+        file: { filename: "filename", originalname: "filename" },
+      };
 
       await firebase(req, null, next);
 
-      expect(next).toHaveBeenCalledWith(expectedError);
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe("When it's invoked with file but rename fails", () => {
+    test("Then it should call the next function", async () => {
+      jest
+        .spyOn(path, "join")
+        .mockReturnValue(`${path.join("uploads", "images")}`);
+
+      jest.spyOn(fs, "rename").mockRejectedValue();
+
+      jest.spyOn(fs, "readFile").mockImplementation((pathToRead, callback) => {
+        callback();
+      });
+
+      const next = jest.fn();
+      const req = {
+        file: { filename: "filename", originalname: "filename" },
+      };
+
+      await firebase(req, null, next);
+
+      expect(next).toHaveBeenCalled();
     });
   });
 });
