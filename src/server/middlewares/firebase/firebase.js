@@ -53,7 +53,7 @@ const firebase = async (req, res, next) => {
               const firebaseImageURL = await getDownloadURL(storageRef);
 
               req.profilePictureBackup = firebaseImageURL;
-              req.profilePicture = path.join("uploads", "images", newPicture);
+              req.profilePicture = newPicture;
 
               next();
             }
