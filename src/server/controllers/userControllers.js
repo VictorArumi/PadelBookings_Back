@@ -7,8 +7,8 @@ const User = require("../../database/models/User");
 
 const userRegister = async (req, res, next) => {
   try {
-    const { username, password, name, profilePicture, profilePictureBackup } =
-      req.body;
+    const { username, password, name } = req.body;
+    const { profilePicture, profilePictureBackup } = req;
 
     const user = await User.findOne({ username });
 
